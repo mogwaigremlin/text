@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Display - Simple URL Query Text Viewer</title>
+    <meta name="description" content="Display plain text content from URL query strings. Simple utility for sharing and viewing text through URL parameters.">
+    
+    <!-- Open Graph tags for social sharing -->
+    <meta property="og:title" content="Text Display - URL Query Text Viewer">
+    <meta property="og:description" content="Display plain text content from URL query strings. Simple utility for sharing text through URLs.">
+    <meta property="og:type" content="website">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #1d1d1f;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-success {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .status-warning {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .status-info {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-white {
+            background-color: #ffffff;
+        }
+
+        .card-blue {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .text-display {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-height: 120px;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            word-break: break-words;
+        }
+
+        .text-display.empty {
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .text-display.empty p {
+            margin-bottom: 0.5rem;
+        }
+
+        .button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2563eb;
+        }
+
+        .button.copied {
+            background-color: #10b981;
+        }
+
+        .character-count {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .url-info {
+            margin-bottom: 0.75rem;
+        }
+
+        .url-info label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .url-info code {
+            display: block;
+            background-color: #f3f4f6;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            word-break: break-all;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .instructions {
+            color: #1e40af;
+        }
+
+        .instructions code {
+            background-color: #dbeafe;
+            padding: 0.125rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+
+        .instructions ul {
+            list-style-type: disc;
+            list-style-position: inside;
+            margin-top: 0.75rem;
+        }
+
+        .instructions li {
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .example-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .example-button {
+            text-align: left;
+            padding: 0.75rem;
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-button:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .example-button .title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .example-button .url {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: #1f2937;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="app" style="display: none;">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <h1>
+                    <span>📝</span>
+                    Text Display
+                    <span>📝</span>
+                </h1>
+                <p>
+                    A simple utility to display plain text from URL query strings. 
+                    Pass your text using the <code>?text=</code> parameter.
+                </p>
+            </header>
+
+            <!-- Main Content -->
+            <main>
+                <!-- Status Indicator -->
+                <div id="status-indicator"></div>
+
+                <!-- Text Display Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            📄 Displayed Text
+                        </h2>
+                        <button id="copy-button" class="button" style="display: none;">
+                            📋 Copy
+                        </button>
+                    </div>
+                    
+                    <div id="text-content" class="text-display"></div>
+                    <div id="character-count" class="character-count" style="display: none;"></div>
+                </div>
+
+                <!-- URL Information -->
+                <div class="card card-white">
+                    <h3 class="card-title">🔗 URL Information</h3>
+                    <div class="url-info">
+                        <label>Current URL:</label>
+                        <code id="current-url"></code>
+                    </div>
+                    <div id="encoded-text" class="url-info" style="display: none;">
+                        <label>Text Parameter (URL Encoded):</label>
+                        <code id="encoded-value"></code>
+                    </div>
+                </div>
+
+                <!-- Usage Instructions -->
+                <div class="card card-blue">
+                    <h3 class="card-title instructions">ℹ️ How to Use</h3>
+                    <div class="instructions">
+                        <p>Add text to the URL using the <code>?text=</code> parameter:</p>
+                        <div style="background-color: #dbeafe; padding: 1rem; border-radius: 0.5rem; margin: 0.75rem 0;">
+                            <code id="example-url" style="background: none; padding: 0;"></code>
+                        </div>
+                        <ul>
+                            <li>Spaces should be encoded as <code>%20</code></li>
+                            <li>Special characters are automatically decoded</li>
+                            <li>The text will be displayed exactly as provided</li>
+                            <li>Works with any plain text content</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Examples -->
+                <div class="card" style="background-color: #f9fafb;">
+                    <h3 class="card-title">▶️ Try These Examples</h3>
+                    <div class="example-grid">
+                        <button class="example-button" onclick="loadExample('Hello World!')">
+                            <div class="title">Simple Text</div>
+                            <div class="url">?text=Hello%20World!</div>
+                        </button>
+                        <button class="example-button" onclick="loadExample('Line 1\\nLine 2\\nLine 3')">
+                            <div class="title">Multi-line Text</div>
+                            <div class="url">?text=Line%201%0ALine%202%0ALine%203</div>
+                        </button>
+                        <button class="example-button" onclick="loadExample('Special chars: @#$%^&*()_+-={}[]|\\\\:;&quot;&gt;&lt;,.?/')">
+                            <div class="title">Special Characters</div>
+                            <div class="url">?text=Special%20chars%3A%20%40%23...</div>
+                        </button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>
+                    Simple text display utility • Supports URL encoding/decoding • 📱 Mobile friendly
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        let currentText = null;
+        let isCopied = false;
+
+        // Initialize the app
+        function init() {
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            currentText = urlParams.get('text');
+            
+            // Update UI
+            updateStatusIndicator();
+            updateTextDisplay();
+            updateUrlInfo();
+            updateExampleUrl();
+            
+            // Hide loading, show app
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }
+
+        function updateStatusIndicator() {
+            const indicator = document.getElementById('status-indicator');
+            
+            if (currentText !== null && currentText !== '') {
+                indicator.className = 'status-indicator status-success';
+                indicator.innerHTML = '✅ Text successfully loaded from URL parameter';
+            } else if (currentText === '') {
+                indicator.className = 'status-indicator status-warning';
+                indicator.innerHTML = '⚠️ Text parameter is empty';
+            } else {
+                indicator.className = 'status-indicator status-info';
+                indicator.innerHTML = 'ℹ️ Add a text parameter to the URL to get started';
+            }
+        }
+
+        function updateTextDisplay() {
+            const textContent = document.getElementById('text-content');
+            const copyButton = document.getElementById('copy-button');
+            const charCount = document.getElementById('character-count');
+            
+            if (currentText !== null && currentText !== '') {
+                textContent.textContent = currentText;
+                textContent.className = 'text-display';
+                copyButton.style.display = 'flex';
+                charCount.style.display = 'block';
+                charCount.innerHTML = `🔢 ${currentText.length} characters`;
+            } else if (currentText === '') {
+                textContent.className = 'text-display empty';
+                textContent.innerHTML = '<p>Empty text parameter provided</p>';
+                copyButton.style.display = 'none';
+                charCount.style.display = 'none';
+            } else {
+                textContent.className = 'text-display empty';
+                textContent.innerHTML = `
+                    <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">No text parameter provided</p>
+                    <p style="font-size: 0.875rem;">Add <code style="background-color: #e5e7eb; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">?text=your_text_here</code> to the URL to display text</p>
+                `;
+                copyButton.style.display = 'none';
+                charCount.style.display = 'none';
+            }
+        }
+
+        function updateUrlInfo() {
+            document.getElementById('current-url').textContent = window.location.href;
+            
+            const encodedDiv = document.getElementById('encoded-text');
+            const encodedValue = document.getElementById('encoded-value');
+            
+            if (currentText && currentText !== '') {
+                encodedDiv.style.display = 'block';
+                encodedValue.textContent = encodeURIComponent(currentText);
+            } else {
+                encodedDiv.style.display = 'none';
+            }
+        }
+
+        function updateExampleUrl() {
+            const baseUrl = window.location.origin + window.location.pathname;
+            document.getElementById('example-url').textContent = baseUrl + '?text=Hello%20World';
+        }
+
+        async function copyToClipboard() {
+            if (!currentText) return;
+            
+            const button = document.getElementById('copy-button');
+            
+            try {
+                await navigator.clipboard.writeText(currentText);
+                button.innerHTML = '✅ Copied!';
+                button.className = 'button copied';
+                showToast('Text copied to clipboard!');
+                
+                setTimeout(() => {
+                    button.innerHTML = '📋 Copy';
+                    button.className = 'button';
+                }, 2000);
+            } catch (err) {
+                showToast('Failed to copy text to clipboard', true);
+            }
+        }
+
+        function loadExample(exampleText) {
+            const newUrl = window.location.origin + window.location.pathname + '?text=' + encodeURIComponent(exampleText);
+            window.location.href = newUrl;
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#dc2626' : '#1f2937';
+            toast.className = 'toast show';
+            
+            setTimeout(() => {
+                toast.className = 'toast';
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('copy-button').addEventListener('click', copyToClipboard);
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
