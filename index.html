@@ -344,23 +344,7 @@
 
             <!-- Main Content -->
             <main>
-                <!-- Status Indicator -->
-                <div id="status-indicator"></div>
 
-                <!-- Text Display Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            📄 Displayed Text
-                        </h2>
-                        <button id="copy-button" class="button" style="display: none;">
-                            📋 Copy
-                        </button>
-                    </div>
-                    
-                    
-                    <div id="character-count" class="character-count" style="display: none;"></div>
-                </div>
 
                 <!-- URL Information -->
                 <div class="card card-white">
@@ -425,28 +409,28 @@
 
         function updateTextDisplay() {
             const textContent = document.getElementById('text-content');
-            const copyButton = document.getElementById('copy-button');
-            const charCount = document.getElementById('character-count');
+            //const copyButton = document.getElementById('copy-button');
+            //const charCount = document.getElementById('character-count');
             
             if (currentText !== null && currentText !== '') {
                 textContent.textContent = currentText;
                 textContent.className = 'text-display';
-                copyButton.style.display = 'flex';
-                charCount.style.display = 'block';
-                charCount.innerHTML = `🔢 ${currentText.length} characters`;
+                //copyButton.style.display = 'flex';
+                //charCount.style.display = 'block';
+                //charCount.innerHTML = `🔢 ${currentText.length} characters`;
             } else if (currentText === '') {
                 textContent.className = 'text-display empty';
                 textContent.innerHTML = '<p>Empty text parameter provided</p>';
-                copyButton.style.display = 'none';
-                charCount.style.display = 'none';
+                //copyButton.style.display = 'none';
+                //charCount.style.display = 'none';
             } else {
                 textContent.className = 'text-display empty';
                 textContent.innerHTML = `
                     <p style="font-size: 1.25rem; margin-bottom: 0.5rem;">No text parameter provided</p>
                     <p style="font-size: 0.875rem;">Add <code style="background-color: #e5e7eb; padding: 0.25rem 0.5rem; border-radius: 0.25rem;">?text=your_text_here</code> to the URL to display text</p>
                 `;
-                copyButton.style.display = 'none';
-                charCount.style.display = 'none';
+                //copyButton.style.display = 'none';
+                //charCount.style.display = 'none';
             }
         }
 
