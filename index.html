@@ -337,6 +337,7 @@
             <!-- Header -->
             <header class="header">
                 <h1>
+                    <div id="text-content" class="text-display"></div>
                     <span>📝</span>
                     Text Display
                     <span>📝</span>
@@ -363,7 +364,7 @@
                         </button>
                     </div>
                     
-                    <div id="text-content" class="text-display"></div>
+                    
                     <div id="character-count" class="character-count" style="display: none;"></div>
                 </div>
 
@@ -511,7 +512,7 @@
         }
 
         // Event listeners
-        document.getElementById('copy-button').addEventListener('click', copyToClipboard);
+        //document.getElementById('copy-button').addEventListener('click', copyToClipboard);
 
         // Initialize when page loads
         window.addEventListener('load', init);
