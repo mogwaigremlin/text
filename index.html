@@ -405,8 +405,8 @@
             // Update UI
             updateStatusIndicator();
             updateTextDisplay();
-            updateUrlInfo();
-            updateExampleUrl();
+            //updateUrlInfo();
+            //updateExampleUrl();
             
             // Hide loading, show app
             document.getElementById('loading').style.display = 'none';
@@ -456,7 +456,7 @@
         }
 
         function updateUrlInfo() {
-            /* document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('current-url').textContent = window.location.href;
             
             const encodedDiv = document.getElementById('encoded-text');
             const encodedValue = document.getElementById('encoded-value');
@@ -466,7 +466,7 @@
                 encodedValue.textContent = encodeURIComponent(currentText);
             } else {
                 encodedDiv.style.display = 'none';
-            }*/
+            }
         }
 
         function updateExampleUrl() {
